@@ -747,7 +747,7 @@ export const ProgramStudy = {
       faculty: "Fakultas Komunikasi dan Informatika",
       title: "Sarjana Komputer (S.Kom.)",
       accreditation: "Unggul",
-      accreditation_number: "Data tidak tersedia",
+      accreditation_number: "062/SK/LAM-INFOKOM/Ak/S/I1l/2025",
       accreditation_date: "24/03/2025",
       dean: {
         name: "Dr. Endah Sudarmilah, S.T, M.Eng.",
@@ -963,4 +963,10 @@ export const ProgramStudy = {
       },
     },
   ],
+};
+
+export const findProgramStudyById = (id) => {
+  return ProgramStudy.data.find((program) => {
+    return program.id === id;
+  });
 };

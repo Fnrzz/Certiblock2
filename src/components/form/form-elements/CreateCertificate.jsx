@@ -10,9 +10,8 @@ import TextArea from "../input/TextArea";
 import { CheckCircleIcon, CopyIcon, DownloadIcon } from "@/icons";
 import Select from "../input/Select";
 import { ProgramStudy } from "@/services/certificate/programStudy";
-// import { issueCertificate } from "@/services/certificate/issueCertificate";
-// import { downloadCertificateByNIM } from "@/services/certificate/downloadCertificate";
-// import { uploadCertificateFile } from "@/services/certificate/uploadCertificate";
+import { issueCertificate } from "@/services/MetaMask/issueCertificate";
+import { DownloadJson } from "@/services/certificate/downloadJson";
 
 export default function CreateCertificate() {
   const successModal = useModal();
@@ -37,36 +36,69 @@ export default function CreateCertificate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setIsLoading(true);
-    // setError(null);
+    setIsLoading(true);
+    setError(null);
 
-    const formData = new FormData(e.target);
-    const studentData = Object.fromEntries(formData.entries());
-    console.log("studentData", studentData);
+    if (typeof window.ethereum === "undefined") {
+      setError("MetaMask is not installed. Please install it to continue.");
+      setIsLoading(false);
+      errorModal.openModal();
+      return;
+    }
 
-    // try {
-    //   // Mengambil semua data dari form
-    //   const formData = new FormData(e.target);
-    //   const studentData = Object.fromEntries(formData.entries());
+    try {
+      const formData = new FormData(e.target);
+      const studentData = Object.fromEntries(formData.entries());
 
-    //   // Panggil service
-    //   const result = await issueCertificate(studentData);
-    //   setSubmissionResult(result);
+      const response = await fetch("/api/issue-certificate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+        },
+        body: JSON.stringify({ studentData }),
+      });
 
-    //   const studentID = result.certificateData.studentDetails.studentIdNumber;
-    //   const fileName = `certificate-${studentID}.json`;
+      if (!response.ok) {
+        throw new Error(result.error || "An unknown error occurred");
+      }
 
-    //   await uploadCertificateFile(result.certificateData, fileName);
+      const result = await response.json();
 
-    //   successModal.openModal();
-    //   e.target.reset();
-    // } catch (err) {
-    //   // Simpan pesan error dan buka modal error
-    //   setError(err.message);
-    //   errorModal.openModal();
-    // } finally {
-    //   setIsLoading(false);
-    // }
+      const txHash = await issueCertificate(result.data.hash);
+
+      const createTransaction = await fetch("/api/create-transaction", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+        },
+        body: JSON.stringify({
+          studentDetails: result.data.studentDetails,
+          transactionHash: txHash,
+          certificateHash: result.data.hash,
+        }),
+      });
+
+      if (!createTransaction.ok) {
+        throw new Error(createTransaction.error || "An unknown error occurred");
+      }
+
+      const data = {
+        certificateData: result.data.studentDetails,
+        transactionHash: txHash,
+      };
+
+      setSubmissionResult(data);
+      successModal.openModal();
+
+      e.target.reset();
+    } catch (error) {
+      setError(error.message);
+      errorModal.openModal();
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCloseErrorModal = () => {
@@ -85,9 +117,10 @@ export default function CreateCertificate() {
       });
   };
 
-  const handleDownloadJson = async (studentIdNumber) => {
-    if (!studentIdNumber) return;
-    await downloadCertificateByNIM(studentIdNumber);
+  const handleDownloadJson = async (txHash) => {
+    if (!txHash) return;
+    console.log(txHash);
+    await DownloadJson(txHash);
   };
 
   const handleConfirmAndCloseAll = () => {
@@ -244,11 +277,7 @@ export default function CreateCertificate() {
             Output JSON :
           </h6>
           <button
-            onClick={() =>
-              handleDownloadJson(
-                submissionResult.certificateData.studentDetails.studentIdNumber
-              )
-            }
+            onClick={() => handleDownloadJson(submissionResult.transactionHash)}
             className="text-gray-400 hover:text-gray-600"
           >
             <DownloadIcon className="w-5 h-5" />

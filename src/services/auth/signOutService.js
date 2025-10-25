@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 export const signOut = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { session },
