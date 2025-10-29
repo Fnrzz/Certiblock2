@@ -17,9 +17,14 @@ export const UploadJson = async (dataJson) => {
 
   const { data: certificate, error: certificateError } = await supabase
     .from("certificates")
-    .upsert({
-      file_path: uploadData.path,
-    })
+    .upsert(
+      {
+        file_path: uploadData.path,
+      },
+      {
+        onConflict: "file_path",
+      }
+    )
     .select("id")
     .single();
 
