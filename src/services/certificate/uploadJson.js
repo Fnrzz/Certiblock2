@@ -17,7 +17,7 @@ export const UploadJson = async (dataJson) => {
 
   const { data: certificate, error: certificateError } = await supabase
     .from("certificates")
-    .insert({
+    .upsert({
       file_path: uploadData.path,
     })
     .select("id")
