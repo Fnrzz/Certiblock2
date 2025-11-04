@@ -37,7 +37,7 @@ export const DownloadJson = async (txhash) => {
     const url = URL.createObjectURL(file);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `certificate.json`;
+    link.download = `certificate-${certificate.file_path}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
