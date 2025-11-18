@@ -18,6 +18,7 @@ import { shortenHash } from "@/utils/common/shortenHash";
 import { formatDate } from "@/utils/common/formatDate";
 import { DownloadJson } from "@/services/certificate/downloadJson";
 import CopyButton from "../ui/button/CopyButton";
+import SyncTransactionsButton from "../ui/button/SyncTransactionsButton";
 
 export default function ListTransactions() {
   const modal = useModal();
@@ -97,6 +98,7 @@ export default function ListTransactions() {
   return (
     <div className="overflow-hidden">
       <div className="w-full flex flex-col sm:flex-row items-center gap-4 mb-4">
+        <SyncTransactionsButton onComplete={() => setSearchInput("")} />
         <form
           onSubmit={handleSearch}
           className="w-auto ml-auto flex items-center gap-2"

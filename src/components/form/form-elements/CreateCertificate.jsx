@@ -7,11 +7,12 @@ import Button from "@/components/ui/button/Button";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
 import TextArea from "../input/TextArea";
-import { CheckCircleIcon, CopyIcon, DownloadIcon } from "@/icons";
+import { DownloadIcon } from "@/icons";
 import Select from "../input/Select";
 import { ProgramStudy } from "@/services/certificate/programStudy";
 import { issueCertificate } from "@/services/MetaMask/issueCertificate";
 import { DownloadJson } from "@/services/certificate/downloadJson";
+import CopyButton from "@/components/ui/button/CopyButton";
 
 export default function CreateCertificate() {
   const successModal = useModal();
@@ -21,8 +22,6 @@ export default function CreateCertificate() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [submissionResult, setSubmissionResult] = useState(null);
-
-  const [isHashCopied, setIsHashCopied] = useState(false);
 
   const [programStudy, setProgramStudy] = useState([]);
 
@@ -103,18 +102,6 @@ export default function CreateCertificate() {
 
   const handleCloseErrorModal = () => {
     errorModal.closeModal();
-  };
-
-  const handleCopy = (textToCopy) => {
-    navigator.clipboard
-      .writeText(textToCopy)
-      .then(() => {
-        setIsHashCopied(true);
-        setTimeout(() => setIsHashCopied(false), 2000);
-      })
-      .catch((err) => {
-        console.error("Gagal menyalin:", err);
-      });
   };
 
   const handleDownloadJson = async (txHash) => {
@@ -256,16 +243,7 @@ export default function CreateCertificate() {
           <h6 className="mb-2 text-sm text-gray-600 dark:text-gray-400">
             Transaction Hash :
           </h6>
-          <button
-            onClick={() => handleCopy(submissionResult.transactionHash)}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            {isHashCopied ? (
-              <CheckCircleIcon className="text-green-500" />
-            ) : (
-              <CopyIcon className="w-5 h-5" />
-            )}
-          </button>
+          <CopyButton textToCopy={submissionResult?.transactionHash} />
         </div>
         <p className="mb-3 text-sm text-gray-400 break-all text-left">
           {submissionResult?.transactionHash}
