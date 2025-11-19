@@ -1,15 +1,7 @@
 import { getTransactions } from "@/services/transaction/getTransactions";
-import { Transaction } from "ethers";
 import { NextResponse } from "next/server";
 
 export const GET = async (req) => {
-  if (
-    req.headers.get("Authorization") !==
-    `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`
-  ) {
-    return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
-  }
-
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || 1);

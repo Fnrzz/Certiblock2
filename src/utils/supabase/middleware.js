@@ -33,6 +33,24 @@ export async function updateSession(request) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const path = request.nextUrl.pathname;
+
+  const publicApiRoutes = [
+    "/api/login",
+    "/api/logout",
+    "/api/verify-certificate",
+    "/api/webhooks/alchemy",
+  ];
+
+  if (path.startsWith("/api")) {
+    const isPublicApiRoute = publicApiRoutes.some((route) =>
+      path.startsWith(route)
+    );
+    if (!isPublicApiRoute && !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
   if (user && request.nextUrl.pathname === "/login") {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";

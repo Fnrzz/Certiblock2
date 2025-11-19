@@ -51,10 +51,6 @@ export default function CreateCertificate() {
 
       const response = await fetch("/api/issue-certificate", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
         body: JSON.stringify({ studentData }),
       });
 
@@ -68,10 +64,6 @@ export default function CreateCertificate() {
 
       const createTransaction = await fetch("/api/create-transaction", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
         body: JSON.stringify({
           studentDetails: result.data.studentDetails,
           transactionHash: txHash,
