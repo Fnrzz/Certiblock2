@@ -29,7 +29,7 @@ export default function ListTransactions() {
   const [error, setError] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [syncList, setSyncList] = useState(true);
   const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
@@ -44,13 +44,7 @@ export default function ListTransactions() {
         });
 
         const response = await fetch(
-          `/api/get-transactions?${params.toString()}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-            },
-          }
+          `/api/get-transactions?${params.toString()}`
         );
         const data = await response.json();
         setApiResponse(data);
@@ -66,7 +60,7 @@ export default function ListTransactions() {
     };
 
     fetchTransactions();
-  }, [currentPage, searchInput]);
+  }, [currentPage, searchInput, syncList]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -98,7 +92,7 @@ export default function ListTransactions() {
   return (
     <div className="overflow-hidden">
       <div className="w-full flex flex-col sm:flex-row items-center gap-4 mb-4">
-        <SyncTransactionsButton onComplete={() => setSearchInput("")} />
+        <SyncTransactionsButton onComplete={() => setSyncList(!syncList)} />
         <form
           onSubmit={handleSearch}
           className="w-auto ml-auto flex items-center gap-2"
