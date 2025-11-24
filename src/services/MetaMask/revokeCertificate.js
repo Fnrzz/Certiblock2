@@ -16,7 +16,7 @@ export const revokeCertificate = async (hash) => {
       throw new Error("Transaction was rejected by the user in MetaMask.");
     }
     throw new Error(
-      error.message || "An error occurred during the blockchain transaction."
+      error.reason || "An error occurred during the blockchain transaction."
     );
   }
 };
