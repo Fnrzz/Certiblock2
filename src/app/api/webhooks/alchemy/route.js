@@ -8,9 +8,15 @@ function isValidSignature(body, signature, signinKey) {
   const digest = hmac.digest("hex");
   return signature === digest;
 }
+
 const CERTIFICATE_ISSUED_EVENT_SIGNATURE = ethers.id(
   "CertificateIssued(bytes32,uint256)"
 );
+
+const CERTIFICATE_REVOKED_EVENT_SIGNATURE = ethers.id(
+  "CertificateRevoked(bytes32,uint256)"
+);
+
 export const POST = async (req) => {
   try {
     const body = await req.text();
@@ -22,11 +28,8 @@ export const POST = async (req) => {
     }
 
     const data = JSON.parse(body);
-
     const dataEvent = data.event?.data;
-
     const log = dataEvent?.block.logs[0];
-
     const blockNumber = dataEvent?.block.number;
 
     const confirmedAt = new Date(
@@ -38,22 +41,43 @@ export const POST = async (req) => {
         BigInt(log.transaction.effectiveGasPrice)
     );
 
-    if (!log || log.topics[0] !== CERTIFICATE_ISSUED_EVENT_SIGNATURE) {
+    if (
+      log.topics[0] !== CERTIFICATE_ISSUED_EVENT_SIGNATURE &&
+      log.topics[0] !== CERTIFICATE_REVOKED_EVENT_SIGNATURE
+    ) {
       return NextResponse.json({ message: "Event ignored." });
     }
 
-    const updateTransaction = await UpdateTransaction(
-      log,
-      blockNumber,
-      confirmedAt,
-      transactionFee
-    );
-
-    if (updateTransaction.error) {
-      return NextResponse.json(
-        { error: updateTransaction.error },
-        { status: 500 }
+    if (log.topics[0] == CERTIFICATE_ISSUED_EVENT_SIGNATURE) {
+      const status = "CONFIRMED";
+      const updateTransaction = await UpdateTransaction(
+        log,
+        blockNumber,
+        confirmedAt,
+        transactionFee,
+        status
       );
+      if (updateTransaction.error) {
+        return NextResponse.json(
+          { error: updateTransaction.error },
+          { status: 500 }
+        );
+      }
+    } else if (log.topics[0] == CERTIFICATE_REVOKED_EVENT_SIGNATURE) {
+      const status = "REVOKED";
+      const updateTransaction = await UpdateTransaction(
+        log,
+        blockNumber,
+        confirmedAt,
+        transactionFee,
+        status
+      );
+      if (updateTransaction.error) {
+        return NextResponse.json(
+          { error: updateTransaction.error },
+          { status: 500 }
+        );
+      }
     }
 
     return NextResponse.json(

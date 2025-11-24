@@ -11,6 +11,7 @@ import {
   HorizontaLDots,
   ListIcon,
   PencilIcon,
+  TrashBinIcon,
 } from "@/icons";
 
 const navItems = [
@@ -28,6 +29,11 @@ const navItems = [
     icon: <PencilIcon />,
     name: "Certificate Create",
     path: "/dashboard/certificate-create",
+  },
+  {
+    icon: <TrashBinIcon />,
+    name: "Certificate Revoke",
+    path: "/dashboard/certificate-revoke",
   },
   {
     icon: <CheckCircleIcon />,

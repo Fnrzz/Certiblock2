@@ -4,7 +4,8 @@ export const UpdateTransaction = async (
   log,
   blockNumber,
   confirmedAt,
-  transactionFee
+  transactionFee,
+  status
 ) => {
   const supabase = await createClient();
   const transactionHash = log.transaction.hash;
@@ -12,7 +13,7 @@ export const UpdateTransaction = async (
   const { error: errorTransaction } = await supabase
     .from("transactions")
     .update({
-      status: "CONFIRMED",
+      status: status,
       transaction_hash: transactionHash,
       block_number: blockNumber,
       confirmed_at: confirmedAt,
