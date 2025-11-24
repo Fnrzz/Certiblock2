@@ -161,7 +161,7 @@ export default function ListTransactions() {
                             {shortenHash(order.transaction_hash, 10, 4)}
                           </button>
                         </TableCell>
-                        <TableCell className="whitespace-nowrap px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-blue-400">
+                        <TableCell className="whitespace-nowrap px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                           {order.type}
                         </TableCell>
                         <TableCell className="whitespace-nowrap px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
