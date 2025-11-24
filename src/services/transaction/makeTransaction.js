@@ -13,6 +13,7 @@ export const MakeTransaction = async (
       transaction_hash: transaction_hash,
       status: "PENDING",
       certificate_hash: certificate_hash,
+      type: "ISSUE",
     });
 
   return { error: errorTransaction };

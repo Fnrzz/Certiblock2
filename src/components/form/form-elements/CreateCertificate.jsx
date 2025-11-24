@@ -77,6 +77,7 @@ export default function CreateCertificate() {
 
       const data = {
         certificateData: result.data.studentDetails,
+        certificateHash: result.data.hash,
         transactionHash: txHash,
       };
 
@@ -230,7 +231,7 @@ export default function CreateCertificate() {
         <h4 className="mb-3 text-2xl font-semibold text-center text-gray-800 dark:text-white/90 sm:text-title-sm">
           Well Done!
         </h4>
-        {/* Transaction Hash dengan Tombol Copy */}
+
         <div className="flex items-center justify-between">
           <h6 className="mb-2 text-sm text-gray-600 dark:text-gray-400">
             Transaction Hash :
@@ -241,7 +242,16 @@ export default function CreateCertificate() {
           {submissionResult?.transactionHash}
         </p>
 
-        {/* Output JSON dengan Tombol Copy */}
+        <div className="flex items-center justify-between">
+          <h6 className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+            Certificate Hash :
+          </h6>
+          <CopyButton textToCopy={submissionResult?.certificateHash} />
+        </div>
+        <p className="mb-3 text-sm text-gray-400 break-all text-left">
+          {submissionResult?.certificateHash}
+        </p>
+
         <div className="flex items-center justify-between">
           <h6 className="mb-2 text-sm text-gray-600 dark:text-gray-400">
             Output JSON :

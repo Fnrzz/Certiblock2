@@ -50,33 +50,31 @@ export const POST = async (req) => {
 
     if (log.topics[0] == CERTIFICATE_ISSUED_EVENT_SIGNATURE) {
       const status = "CONFIRMED";
+      const type = "ISSUE";
       const updateTransaction = await UpdateTransaction(
         log,
         blockNumber,
         confirmedAt,
         transactionFee,
-        status
+        status,
+        type
       );
-      if (updateTransaction.error) {
-        return NextResponse.json(
-          { error: updateTransaction.error },
-          { status: 500 }
-        );
+      if (updateTransaction?.error) {
+        throw new Error(updateTransaction.error);
       }
     } else if (log.topics[0] == CERTIFICATE_REVOKED_EVENT_SIGNATURE) {
       const status = "REVOKED";
+      const type = "REVOKE";
       const updateTransaction = await UpdateTransaction(
         log,
         blockNumber,
         confirmedAt,
         transactionFee,
-        status
+        status,
+        type
       );
-      if (updateTransaction.error) {
-        return NextResponse.json(
-          { error: updateTransaction.error },
-          { status: 500 }
-        );
+      if (updateTransaction?.error) {
+        throw new Error(updateTransaction.error);
       }
     }
 

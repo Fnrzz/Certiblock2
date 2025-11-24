@@ -9,7 +9,7 @@ export const getTransactions = async (page = 1, limit = 10, searchQuery) => {
   let query = supabase
     .from("transactions")
     .select(
-      "transaction_hash, certificate_hash, confirmed_at, transaction_fee, status,block_number",
+      "transaction_hash, certificate_hash, confirmed_at, transaction_fee, status,block_number,type",
       { count: "exact" }
     )
     .range(from, to)

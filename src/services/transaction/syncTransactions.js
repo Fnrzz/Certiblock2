@@ -53,11 +53,15 @@ export const syncPendingTransactions = async () => {
           };
 
           if (log) {
+            const type = "ISSUE";
+            const status = "CONFIRMED";
             await UpdateTransaction(
               log,
               receipt.blockNumber,
               confirmedAt,
-              transactionFee
+              transactionFee,
+              status,
+              type
             );
             updatedCount++;
           }

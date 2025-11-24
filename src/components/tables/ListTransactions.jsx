@@ -91,7 +91,7 @@ export default function ListTransactions() {
         >
           <Input
             type="text"
-            placeholder="Search By Txn Hash"
+            placeholder="Search By Certificate Hash"
             required={false}
             className="dark:bg-dark-900"
             name="search"
@@ -130,7 +130,7 @@ export default function ListTransactions() {
                         isHeader
                         className="whitespace-nowrap px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                       >
-                        Certificate Hash
+                        Txn Type
                       </TableCell>
                       <TableCell
                         isHeader
@@ -162,7 +162,7 @@ export default function ListTransactions() {
                           </button>
                         </TableCell>
                         <TableCell className="whitespace-nowrap px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-blue-400">
-                          {shortenHash(order.certificate_hash, 10, 4)}
+                          {order.type}
                         </TableCell>
                         <TableCell className="whitespace-nowrap px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                           {formatDate(order.confirmed_at)}
@@ -241,6 +241,17 @@ export default function ListTransactions() {
 
                   <div className="flex flex-col sm:flex-row">
                     <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300 mb-1 sm:mb-0">
+                      Txn Type
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-gray-600 break-all dark:text-gray-400">
+                        {dataModal.type}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row">
+                    <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300 mb-1 sm:mb-0">
                       Result
                     </span>
                     <Badge
@@ -292,21 +303,22 @@ export default function ListTransactions() {
                       {parseFloat(dataModal.transaction_fee).toFixed(8)} POL
                     </span>
                   </div>
-                  {dataModal.status === "CONFIRMED" && (
-                    <div className="flex flex-col sm:flex-row">
-                      <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300">
-                        Download JSON
-                      </span>
-                      <button
-                        onClick={() =>
-                          handleDownload(dataModal.transaction_hash)
-                        }
-                        className="text-blue-500 dark:text-blue-400"
-                      >
-                        <span className="hidden sm:inline">Download</span>
-                      </button>
-                    </div>
-                  )}
+                  {dataModal.status === "CONFIRMED" &&
+                    dataModal.type === "ISSUE" && (
+                      <div className="flex flex-col sm:flex-row">
+                        <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300">
+                          Download JSON
+                        </span>
+                        <button
+                          onClick={() =>
+                            handleDownload(dataModal.transaction_hash)
+                          }
+                          className="text-blue-500 dark:text-blue-400"
+                        >
+                          <span className="hidden sm:inline">Download</span>
+                        </button>
+                      </div>
+                    )}
                 </div>
               </div>
             )}
