@@ -99,7 +99,6 @@ export default function CreateCertificate() {
 
   const handleDownloadJson = async (txHash) => {
     if (!txHash) return;
-    console.log(txHash);
     await DownloadJson(txHash);
   };
 

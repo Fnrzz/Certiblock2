@@ -75,7 +75,6 @@ export default function ListTransactions() {
 
   const handleDownload = async (txHash) => {
     if (!txHash) return;
-    console.log(txHash);
     await DownloadJson(txHash);
   };
 

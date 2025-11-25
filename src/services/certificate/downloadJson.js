@@ -2,7 +2,6 @@ import { createClient } from "@/utils/supabase/client";
 export const DownloadJson = async (txhash) => {
   try {
     const supabase = createClient();
-    console.log(txhash);
     const { data: transaction, error: transactionError } = await supabase
       .from("transactions")
       .select(`certificate_id`)
@@ -25,19 +24,27 @@ export const DownloadJson = async (txhash) => {
       return { error: certificateError };
     }
 
-    const { data: file, error: fileError } = await supabase.storage
+    const { data: signedData, error: signedError } = await supabase.storage
       .from("certificates")
-      .download(certificate.file_path);
+      .createSignedUrl(certificate.file_path, 60);
 
-    if (fileError) {
-      console.error("Error downloading file:", fileError);
-      return { error: fileError };
-    }
+    if (signedError) throw new Error(signedError.message);
 
-    const url = URL.createObjectURL(file);
+    const response = await fetch(signedData.signedUrl);
+
+    if (!response.ok) throw new Error("Gagal mengunduh file.");
+
+    const fileBlob = await response.blob();
+
+    const url = URL.createObjectURL(fileBlob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `certificate-${certificate.file_path}`;
+
+    const downloadName = certificate.nim
+      ? `certificate-${certificate.nim}.json`
+      : "certificate.json";
+    link.download = downloadName;
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

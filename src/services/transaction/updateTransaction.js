@@ -23,10 +23,32 @@ export const UpdateTransaction = async (
           transaction_fee: transactionFee,
         })
         .eq("certificate_hash", certificateHash)
+        .eq("type", type)
         .eq("status", "PENDING");
 
       if (errorTransaction) throw new Error(errorTransaction.message);
     } else if (type === "REVOKE") {
+      const { data: existingTx, error: findError } = await supabase
+        .from("transactions")
+        .select("certificate_id")
+        .eq("certificate_hash", certificateHash)
+        .eq("type", "ISSUE")
+        .single();
+
+      if (findError) throw new Error(findError.message);
+
+      const certId = existingTx?.certificate_id;
+
+      if (certId) {
+        console.log(certId);
+        const { error: errorDelete } = await supabase
+          .from("certificates")
+          .delete()
+          .eq("id", certId);
+
+        if (errorDelete) throw new Error(errorDelete.message);
+      }
+
       const { error: errorTransaction } = await supabase
         .from("transactions")
         .update({
@@ -34,11 +56,10 @@ export const UpdateTransaction = async (
           certificate_id: null,
         })
         .eq("certificate_hash", certificateHash)
+        .eq("type", "ISSUE")
         .eq("status", "CONFIRMED");
 
-      if (errorTransaction) {
-        throw new Error(errorTransaction.message);
-      }
+      if (errorTransaction) throw new Error(errorTransaction.message);
 
       const { error: errorAddTransaction } = await supabase
         .from("transactions")
@@ -53,9 +74,7 @@ export const UpdateTransaction = async (
           type: type,
         });
 
-      if (errorAddTransaction) {
-        throw new Error(errorAddTransaction.message);
-      }
+      if (errorAddTransaction) throw new Error(errorAddTransaction.message);
     }
 
     return { error: null };
