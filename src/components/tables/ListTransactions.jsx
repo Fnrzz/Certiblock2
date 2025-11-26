@@ -224,13 +224,13 @@ export default function ListTransactions() {
             </div>
 
             {dataModal && (
-              <div className="mt-5 space-y-4 text-sm">
+              <div className="mt-5 space-y-4 text-sm]">
                 <div className="pb-4 space-y-4 border-b border-gray-200 dark:border-gray-700">
                   <div className="flex flex-col sm:flex-row">
                     <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300 mb-1 sm:mb-0">
                       Txn Hash
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center text-sm gap-2">
                       <span className="font-mono text-gray-600 break-all dark:text-gray-400">
                         {dataModal.transaction_hash}
                       </span>
@@ -242,7 +242,7 @@ export default function ListTransactions() {
                     <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300 mb-1 sm:mb-0">
                       Txn Type
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center text-sm gap-2">
                       <span className="font-mono text-gray-600 break-all dark:text-gray-400">
                         {dataModal.type}
                       </span>
@@ -267,7 +267,7 @@ export default function ListTransactions() {
                     <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300 mb-1 sm:mb-0">
                       Block
                     </span>
-                    <span className="text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {dataModal.block_number}
                     </span>
                   </div>
@@ -276,7 +276,7 @@ export default function ListTransactions() {
                     <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300 mb-1 sm:mb-0">
                       Date time
                     </span>
-                    <span className="text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {formatDate(dataModal.confirmed_at)}
                     </span>
                   </div>
@@ -287,7 +287,7 @@ export default function ListTransactions() {
                     <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300">
                       Certificate Hash
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center text-sm gap-2">
                       <span className="font-mono text-gray-600 break-all dark:text-gray-400">
                         {dataModal.certificate_hash}
                       </span>
@@ -298,7 +298,7 @@ export default function ListTransactions() {
                     <span className="w-full font-medium text-gray-700 sm:w-32 dark:text-gray-300">
                       Txn fee
                     </span>
-                    <span className="text-gray-600 dark:text-gray-400">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {parseFloat(dataModal.transaction_fee).toFixed(8)} POL
                     </span>
                   </div>
@@ -314,7 +314,7 @@ export default function ListTransactions() {
                           }
                           className="text-blue-500 dark:text-blue-400"
                         >
-                          <span className="hidden sm:inline">Download</span>
+                          <span className="inline">Download</span>
                         </button>
                       </div>
                     )}
