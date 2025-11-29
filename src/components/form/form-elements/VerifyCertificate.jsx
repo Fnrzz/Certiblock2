@@ -4,16 +4,13 @@ import { useDropzone } from "react-dropzone";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
 import { CheckCircleIcon, CopyIcon } from "@/icons";
-import { revokeCertificate } from "@/services/meta-mask/revokeCertificate";
 
-const RevokeCertificate = () => {
+const VerifyCertificate = () => {
   const successModal = useModal();
   const errorModal = useModal();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [revokeResult, setRevokeResult] = useState(null);
-
+  const [result, setResult] = useState();
   const [isHashCopied, setIsHashCopied] = useState(false);
 
   const handleCopy = (textToCopy) => {
@@ -32,12 +29,10 @@ const RevokeCertificate = () => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
       setIsLoading(true);
-      setError(null);
-
       try {
         const formData = new FormData();
         formData.append("file", file);
-        const response = await fetch("/api/revoke-certificate", {
+        const response = await fetch("/api/verify-certificate", {
           method: "POST",
           body: formData,
         });
@@ -48,16 +43,12 @@ const RevokeCertificate = () => {
           throw new Error(result.error || "An unknown error occurred");
         }
 
-        const certificateHash = result.hash;
-
-        const txHash = await revokeCertificate(certificateHash);
-
-        setRevokeResult({
-          revokeTransactionHash: txHash,
+        setResult({
+          hash: result.hash,
+          certificateData: result.certificateData,
         });
         successModal.openModal();
       } catch (err) {
-        setError(err.message);
         errorModal.openModal();
       } finally {
         setIsLoading(false);
@@ -92,7 +83,7 @@ const RevokeCertificate = () => {
             {isLoading ? (
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 border-4 border-dashed rounded-full animate-spin border-brand-500"></div>
-                <p className="mt-4 text-gray-500">Revokeing...</p>
+                <p className="mt-4 text-gray-500">Verifying...</p>
               </div>
             ) : (
               <>
@@ -147,15 +138,15 @@ const RevokeCertificate = () => {
           </span>
         </div>
         <h4 className="mb-3 text-2xl font-semibold text-center text-gray-800 dark:text-white/90 sm:text-title-sm">
-          Revoked!
+          Verified!
         </h4>
 
         <div className="flex items-center justify-between">
           <h6 className="mb-2 text-sm text-gray-600 dark:text-gray-400">
-            Transaction Hash :
+            Certificate Hash :
           </h6>
           <button
-            onClick={() => handleCopy(revokeResult.revokeTransactionHash)}
+            onClick={() => handleCopy(result.hash)}
             className="text-gray-400 hover:text-gray-600"
           >
             {isHashCopied ? (
@@ -166,7 +157,7 @@ const RevokeCertificate = () => {
           </button>
         </div>
         <p className="mb-3 text-sm text-gray-400 break-all text-left">
-          {revokeResult?.revokeTransactionHash}
+          {result?.hash}
         </p>
 
         <div className="flex items-center justify-center w-full gap-3 mt-7">
@@ -218,11 +209,8 @@ const RevokeCertificate = () => {
           </div>
 
           <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
-            Cannot Revoke!
+            Not Verify!
           </h4>
-          <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-            {error}
-          </p>
 
           <div className="flex items-center justify-center w-full gap-3 mt-7">
             <button
@@ -239,4 +227,4 @@ const RevokeCertificate = () => {
   );
 };
 
-export default RevokeCertificate;
+export default VerifyCertificate;

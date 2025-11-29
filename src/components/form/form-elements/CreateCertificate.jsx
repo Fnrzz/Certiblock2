@@ -10,7 +10,7 @@ import TextArea from "../input/TextArea";
 import { DownloadIcon } from "@/icons";
 import Select from "../input/Select";
 import { ProgramStudy } from "@/services/certificate/programStudy";
-import { issueCertificate } from "@/services/MetaMask/issueCertificate";
+import { issueCertificate } from "@/services/meta-mask/issueCertificate";
 import { DownloadJson } from "@/services/certificate/downloadJson";
 import CopyButton from "@/components/ui/button/CopyButton";
 
