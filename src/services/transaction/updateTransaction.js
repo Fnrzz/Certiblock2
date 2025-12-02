@@ -28,9 +28,22 @@ export const UpdateTransaction = async (
 
       if (errorTransaction) throw new Error(errorTransaction.message);
     } else if (type === "REVOKE") {
+      const { error: errorUpdateTX } = await supabase
+        .from("transactions")
+        .update({
+          status: status,
+          block_number: blockNumber,
+          confirmed_at: confirmedAt,
+          transaction_fee: transactionFee,
+        })
+        .eq("certificate_hash", certificateHash)
+        .eq("type", type)
+        .eq("status", "PENDING");
+      if (errorUpdateTX) throw new Error(errorUpdateTX.message);
+
       const { data: existingTx, error: findError } = await supabase
         .from("transactions")
-        .select("certificate_id")
+        .select("id", "certificate_id")
         .eq("certificate_hash", certificateHash)
         .eq("type", "ISSUE")
         .single();
@@ -52,29 +65,14 @@ export const UpdateTransaction = async (
       const { error: errorTransaction } = await supabase
         .from("transactions")
         .update({
-          status: status,
+          status: "REVOKED",
           certificate_id: null,
         })
-        .eq("certificate_hash", certificateHash)
+        .eq("id", existingTx.id)
         .eq("type", "ISSUE")
         .eq("status", "CONFIRMED");
 
       if (errorTransaction) throw new Error(errorTransaction.message);
-
-      const { error: errorAddTransaction } = await supabase
-        .from("transactions")
-        .insert({
-          certificate_id: null,
-          block_number: blockNumber,
-          confirmed_at: confirmedAt,
-          transaction_fee: transactionFee,
-          transaction_hash: transactionHash,
-          status: "CONFIRMED",
-          certificate_hash: certificateHash,
-          type: type,
-        });
-
-      if (errorAddTransaction) throw new Error(errorAddTransaction.message);
     }
 
     return { error: null };

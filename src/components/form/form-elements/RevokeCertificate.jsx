@@ -1,18 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
 import { CheckCircleIcon, CopyIcon } from "@/icons";
-import { revokeCertificate } from "@/services/meta-mask/revokeCertificate";
+import { useRevokeCertificate } from "@/hooks/useRevokeCertificate";
 
 const RevokeCertificate = () => {
   const successModal = useModal();
   const errorModal = useModal();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [revokeResult, setRevokeResult] = useState(null);
+  const { isLoading, isError, isSuccess, isResult, revoke, reset } =
+    useRevokeCertificate();
 
   const [isHashCopied, setIsHashCopied] = useState(false);
 
@@ -28,40 +27,15 @@ const RevokeCertificate = () => {
       });
   };
 
+  useEffect(() => {
+    if (isError) errorModal.openModal();
+    if (isSuccess) successModal.openModal();
+  }, [isError, isSuccess]);
+
   const onDrop = async (acceptedFiles) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-        const response = await fetch("/api/revoke-certificate", {
-          method: "POST",
-          body: formData,
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || "An unknown error occurred");
-        }
-
-        const certificateHash = result.hash;
-
-        const txHash = await revokeCertificate(certificateHash);
-
-        setRevokeResult({
-          revokeTransactionHash: txHash,
-        });
-        successModal.openModal();
-      } catch (err) {
-        setError(err.message);
-        errorModal.openModal();
-      } finally {
-        setIsLoading(false);
-      }
+      await revoke(file);
     }
   };
 
@@ -155,7 +129,7 @@ const RevokeCertificate = () => {
             Transaction Hash :
           </h6>
           <button
-            onClick={() => handleCopy(revokeResult.revokeTransactionHash)}
+            onClick={() => handleCopy(isResult.revokeTransactionHash)}
             className="text-gray-400 hover:text-gray-600"
           >
             {isHashCopied ? (
@@ -166,13 +140,16 @@ const RevokeCertificate = () => {
           </button>
         </div>
         <p className="mb-3 text-sm text-gray-400 break-all text-left">
-          {revokeResult?.revokeTransactionHash}
+          {isResult?.revokeTransactionHash}
         </p>
 
         <div className="flex items-center justify-center w-full gap-3 mt-7">
           <button
             type="button"
-            onClick={successModal.closeModal}
+            onClick={() => {
+              successModal.closeModal();
+              reset();
+            }}
             className="flex justify-center w-full px-4 py-3 text-sm font-medium text-white rounded-lg bg-gray-800 shadow-theme-xs hover:bg-gray-700 sm:w-auto"
           >
             Close
@@ -221,12 +198,15 @@ const RevokeCertificate = () => {
             Cannot Revoke!
           </h4>
           <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-            {error}
+            {isError}
           </p>
 
           <div className="flex items-center justify-center w-full gap-3 mt-7">
             <button
-              onClick={errorModal.closeModal}
+              onClick={() => {
+                errorModal.closeModal();
+                reset();
+              }}
               type="button"
               className="flex justify-center w-full px-4 py-3 text-sm font-medium text-white rounded-lg bg-error-500 shadow-theme-xs hover:bg-error-600 sm:w-auto"
             >

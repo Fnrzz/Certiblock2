@@ -63,7 +63,7 @@ export const POST = async (req) => {
         throw new Error(updateTransaction.error);
       }
     } else if (log.topics[0] == CERTIFICATE_REVOKED_EVENT_SIGNATURE) {
-      const status = "REVOKED";
+      const status = "CONFIRMED";
       const type = "REVOKE";
       const updateTransaction = await UpdateTransaction(
         log,
