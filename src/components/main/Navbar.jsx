@@ -25,10 +25,13 @@ const Burger = () => {
         <SheetHeader>
           <SheetTitle></SheetTitle>
           <SheetDescription className="flex flex-col gap-3">
-            <Link href={""} className="text-lg hover:text-blue-500">
+            <Link href={"#home"} className="text-lg hover:text-blue-500">
               Verifikasi
             </Link>
-            <Link href={""} className="text-lg hover:text-blue-500">
+            <Link
+              href={"#how-it-works"}
+              className="text-lg hover:text-blue-500"
+            >
               Cara Kerja
             </Link>
           </SheetDescription>
@@ -57,10 +60,10 @@ const Navbar = () => {
           <h3 className="text-gray-400 lg:block hidden">UMS Verifikasi</h3>
         </div>
         <div className=" gap-4 lg:flex hidden">
-          <Link href={""} className="hover:text-blue-500">
+          <Link href={"#home"} className="hover:text-blue-500">
             Verifikasi
           </Link>
-          <Link href={""} className="hover:text-blue-500">
+          <Link href={"#how-it-works"} className="hover:text-blue-500">
             Cara Kerja
           </Link>
         </div>

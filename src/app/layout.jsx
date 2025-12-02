@@ -27,7 +27,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth" id="home">
       <body className={`${outfit.className} dark:bg-gray-900`}>{children}</body>
     </html>
   );
