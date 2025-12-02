@@ -13,15 +13,15 @@ import { ProgramStudy } from "@/services/certificate/programStudy";
 import { issueCertificate } from "@/services/meta-mask/issueCertificate";
 import { DownloadJson } from "@/services/certificate/downloadJson";
 import CopyButton from "@/components/ui/button/CopyButton";
+import { useIssueCertificate } from "@/hooks/useIssueCertificate";
 
 export default function CreateCertificate() {
   const successModal = useModal();
   const errorModal = useModal();
   const confirmationModal = useModal();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [submissionResult, setSubmissionResult] = useState(null);
+  const { issue, isLoading, isError, isResult, isSuccess, reset } =
+    useIssueCertificate();
 
   const [programStudy, setProgramStudy] = useState([]);
 
@@ -33,68 +33,22 @@ export default function CreateCertificate() {
     setProgramStudy(studyNames);
   }, []);
 
+  useEffect(() => {
+    if (isError) errorModal.openModal();
+    if (isSuccess) successModal.openModal();
+  }, [isError, isSuccess]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    if (typeof window.ethereum === "undefined") {
-      setError("MetaMask is not installed. Please install it to continue.");
-      setIsLoading(false);
-      errorModal.openModal();
-      return;
-    }
-
-    try {
-      const formData = new FormData(e.target);
-      const studentData = Object.fromEntries(formData.entries());
-
-      const response = await fetch("/api/issue-certificate", {
-        method: "POST",
-        body: JSON.stringify({ studentData }),
-      });
-
-      if (!response.ok) {
-        throw new Error(result.error || "An unknown error occurred");
-      }
-
-      const result = await response.json();
-
-      const txHash = await issueCertificate(result.data.hash);
-
-      const createTransaction = await fetch("/api/create-transaction", {
-        method: "POST",
-        body: JSON.stringify({
-          studentDetails: result.data.studentDetails,
-          transactionHash: txHash,
-          certificateHash: result.data.hash,
-        }),
-      });
-
-      if (!createTransaction.ok) {
-        throw new Error(createTransaction.error || "An unknown error occurred");
-      }
-
-      const data = {
-        certificateData: result.data.studentDetails,
-        certificateHash: result.data.hash,
-        transactionHash: txHash,
-      };
-
-      setSubmissionResult(data);
-      successModal.openModal();
-
-      e.target.reset();
-    } catch (error) {
-      setError(error.message);
-      errorModal.openModal();
-    } finally {
-      setIsLoading(false);
-    }
+    const formData = new FormData(e.target);
+    const studentData = Object.fromEntries(formData);
+    await issue(studentData);
+    if (isSuccess) e.target.reset();
   };
 
   const handleCloseErrorModal = () => {
     errorModal.closeModal();
+    reset();
   };
 
   const handleDownloadJson = async (txHash) => {
@@ -104,11 +58,8 @@ export default function CreateCertificate() {
 
   const handleConfirmAndCloseAll = () => {
     confirmationModal.closeModal();
-    if (submissionResult.status === "PENDING") {
-      warningModal.closeModal();
-    } else {
-      successModal.closeModal();
-    }
+    successModal.closeModal();
+    reset();
   };
 
   return (
@@ -235,20 +186,20 @@ export default function CreateCertificate() {
           <h6 className="mb-2 text-sm text-gray-600 dark:text-gray-400">
             Transaction Hash :
           </h6>
-          <CopyButton textToCopy={submissionResult?.transactionHash} />
+          <CopyButton textToCopy={isResult?.transactionHash} />
         </div>
         <p className="mb-3 text-sm text-gray-400 break-all text-left">
-          {submissionResult?.transactionHash}
+          {isResult?.transactionHash}
         </p>
 
         <div className="flex items-center justify-between">
           <h6 className="mb-2 text-sm text-gray-600 dark:text-gray-400">
             Certificate Hash :
           </h6>
-          <CopyButton textToCopy={submissionResult?.certificateHash} />
+          <CopyButton textToCopy={isResult?.certificateHash} />
         </div>
         <p className="mb-3 text-sm text-gray-400 break-all text-left">
-          {submissionResult?.certificateHash}
+          {isResult?.certificateHash}
         </p>
 
         <div className="flex items-center justify-between">
@@ -256,7 +207,7 @@ export default function CreateCertificate() {
             Output JSON :
           </h6>
           <button
-            onClick={() => handleDownloadJson(submissionResult.transactionHash)}
+            onClick={() => handleDownloadJson(isResult.transactionHash)}
             className="text-gray-400 hover:text-gray-600"
           >
             <DownloadIcon className="w-5 h-5" />
@@ -264,9 +215,7 @@ export default function CreateCertificate() {
         </div>
         <TextArea
           value={
-            submissionResult
-              ? JSON.stringify(submissionResult.certificateData, null, 2)
-              : ""
+            isResult ? JSON.stringify(isResult.studentDetails, null, 2) : ""
           }
           disabled={true}
           rows={9}
@@ -352,7 +301,7 @@ export default function CreateCertificate() {
             Cannot Submit!
           </h4>
           <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-            {error}
+            {isError}
           </p>
 
           <div className="flex items-center justify-center w-full gap-3 mt-7">
