@@ -6,6 +6,10 @@ const CERTIFICATE_ISSUED_EVENT_SIGNATURE = ethers.id(
   "CertificateIssued(bytes32,uint256)"
 );
 
+const CERTIFICATE_REVOKED_EVENT_SIGNATURE = ethers.id(
+  "CertificateRevoked(bytes32,uint256)"
+);
+
 export const syncPendingTransactions = async () => {
   try {
     const supabase = await createClient();
@@ -13,72 +17,77 @@ export const syncPendingTransactions = async () => {
       process.env.NEXT_PUBLIC_RPC_URL
     );
 
-    let updatedCount = 0;
-    let failedCount = 0;
-
     const { data: pendingTxs, error: fetchError } = await supabase
       .from("transactions")
       .select("*")
       .eq("status", "PENDING");
 
     if (fetchError) throw new Error(fetchError.message);
+
     if (!pendingTxs || pendingTxs.length === 0) {
       return { message: "Tidak ada transaksi pending." };
     }
 
-    for (const tx of pendingTxs) {
-      if (!tx.transaction_hash) continue;
-
-      try {
-        const receipt = await provider.getTransactionReceipt(
-          tx.transaction_hash
-        );
-
-        if (receipt && receipt.status === 1) {
-          const block = await provider.getBlock(receipt.blockNumber);
-          const confirmedAt = new Date(block.timestamp * 1000).toISOString();
-          const transactionFee = ethers.formatEther(
-            receipt.gasUsed * receipt.gasPrice
+    const results = await Promise.all(
+      pendingTxs.map(async (tx) => {
+        if (!tx.transaction_hash) return null;
+        try {
+          const receipt = await provider.getTransactionReceipt(
+            tx.transaction_hash
           );
-
-          const eventLog = receipt.logs.find(
-            (log) => log.topics[0] === CERTIFICATE_ISSUED_EVENT_SIGNATURE
-          );
-
-          const log = {
-            transaction: {
-              hash: eventLog.transactionHash,
-            },
-            topics: [eventLog.topics[0], eventLog.topics[1]],
-          };
-
-          if (log) {
-            const type = "ISSUE";
-            const status = "CONFIRMED";
-            await UpdateTransaction(
-              log,
-              receipt.blockNumber,
-              confirmedAt,
-              transactionFee,
-              status,
-              type
+          if (!receipt) return null;
+          if (receipt.status === 1) {
+            const block = await provider.getBlock(receipt.blockNumber);
+            const confirmedAt = new Date(block.timestamp * 1000).toISOString();
+            const transactionFee = ethers.formatEther(
+              receipt.gasUsed * receipt.gasPrice
             );
-            updatedCount++;
+            const eventLog = receipt.logs.find(
+              (log) =>
+                log.topics[0] === CERTIFICATE_ISSUED_EVENT_SIGNATURE ||
+                log.topics[0] === CERTIFICATE_REVOKED_EVENT_SIGNATURE
+            );
+            if (eventLog) {
+              const logData = {
+                transaction: { hash: eventLog.transactionHash },
+                topics: [...eventLog.topics],
+              };
+              let type = "ISSUE";
+              if (eventLog.topics[0] === CERTIFICATE_REVOKED_EVENT_SIGNATURE) {
+                type = "REVOKE";
+              }
+              await UpdateTransaction(
+                logData,
+                receipt.blockNumber,
+                confirmedAt,
+                transactionFee,
+                "CONFIRMED",
+                type
+              );
+              return "updated";
+            }
+          } else if (receipt.status === 0) {
+            await supabase
+              .from("transactions")
+              .update({ status: "FAILED" })
+              .eq("id", tx.id);
+            return "failed";
           }
-        } else if (receipt && receipt.status === 0) {
-          await supabase
-            .from("transactions")
-            .update({ status: "FAILED" })
-            .eq("id", tx.id);
-          failedCount++;
+        } catch (error) {
+          console.error(
+            `Error memproses tx ${tx.transaction_hash}:`,
+            err.message
+          );
+          return "error";
         }
-      } catch (err) {
-        console.error(
-          `Error memproses tx ${tx.transaction_hash}:`,
-          err.message
-        );
-      }
-    }
+        return null;
+      })
+    );
+
+    const updatedCount = results.filter(
+      (result) => result === "updated"
+    ).length;
+    const failedCount = results.filter((result) => result === "failed").length;
 
     return {
       message: "Sinkronisasi selesai.",
