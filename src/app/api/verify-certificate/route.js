@@ -1,7 +1,6 @@
 import { makeHash } from "@/services/certificate/makeHash";
 import { VerifyCertificate } from "@/services/certificate/verifyCertificate";
-
-const { NextResponse } = require("next/server");
+import { NextResponse } from "next/server";
 
 export const POST = async (req) => {
   try {

@@ -4,6 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { useModal } from "@/hooks/useModal";
 import { Modal } from "@/components/ui/modal";
 import { CheckCircleIcon, CopyIcon } from "@/icons";
+import TextArea from "../input/TextArea";
 
 const VerifyCertificate = () => {
   const successModal = useModal();
@@ -159,6 +160,17 @@ const VerifyCertificate = () => {
         <p className="mb-3 text-sm text-gray-400 break-all text-left">
           {result?.hash}
         </p>
+
+        <div className="flex items-center justify-between">
+          <h6 className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+            Output JSON :
+          </h6>
+        </div>
+        <TextArea
+          value={result ? JSON.stringify(result.certificateData, null, 2) : ""}
+          disabled={true}
+          rows={9}
+        />
 
         <div className="flex items-center justify-center w-full gap-3 mt-7">
           <button
