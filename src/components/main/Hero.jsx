@@ -1,9 +1,10 @@
 import { Sparkles } from "lucide-react";
-import VerifyCertificate from "../form/form-elements/VerifyCertificate";
+import Button from "../ui/button/Button";
+import Link from "next/link";
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-background via-accent/20 to-background py-20 md:py-20">
+    <section className="relative overflow-hidden bg-gradient-to-b from-background via-accent/20 to-background py-20 md:py-28">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]" />
       <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-primary/20 blur-[100px]" />
 
@@ -25,19 +26,22 @@ const Hero = () => {
           </h1>
 
           <p className="mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Platform verifikasi ijazah digital resmi untuk lulusan{" "}
+            Platform resmi untuk memverifikasi keaslian ijazah digital{" "}
             <span className="font-semibold text-foreground">
-              Universitas Muhammadiyah Surakarta.
+              Universitas Muhammadiyah Surakarta
             </span>{" "}
-            Aman, transparan, dan anti-pemalsuan berkat teknologi Blockchain.
+            secara instan, transparan, dan anti-pemalsuan. Lindungi kredibilitas
+            akademik Anda sekarang.
           </p>
 
           <div className="mx-auto max-w-2xl">
-            <VerifyCertificate />
-            <p className="mt-4 text-sm text-muted-foreground text-center">
-              Dipercaya oleh institusi dan perekrut global.
-            </p>
+            <Link href="#verification">
+              <Button>Coba Verifikasi Sekarang</Button>
+            </Link>
           </div>
+          <p className="mt-10 text-sm text-muted-foreground text-center">
+            Dipercaya oleh institusi dan perekrut global.
+          </p>
         </div>
       </div>
     </section>

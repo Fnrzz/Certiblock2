@@ -68,10 +68,10 @@ const VerifyCertificate = () => {
 
   return (
     <>
-      <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
+      <div className="h-full w-full transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
         <form
           {...getRootProps()}
-          className={`dropzone rounded-xl border-dashed border-gray-300 p-7 lg:p-10 ${
+          className={`dropzone h-full w-full rounded-xl border-dashed border-gray-300 p-7 lg:p-10 ${
             isDragActive
               ? "border-brand-500 bg-gray-100 dark:bg-gray-800"
               : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
@@ -80,12 +80,12 @@ const VerifyCertificate = () => {
         >
           <input {...getInputProps()} />
 
-          <div className="dz-message flex flex-col items-center m-0!">
+          <div className="dz-message h-full w-full flex flex-col items-center justify-center m-0!">
             {isLoading ? (
-              <div className="flex flex-col items-center">
+              <>
                 <div className="w-12 h-12 border-4 border-dashed rounded-full animate-spin border-brand-500"></div>
                 <p className="mt-4 text-gray-500">Verifying...</p>
-              </div>
+              </>
             ) : (
               <>
                 <h4 className="mb-3 font-semibold text-gray-800 text-theme-xl dark:text-white/90">

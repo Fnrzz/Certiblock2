@@ -26,13 +26,19 @@ const Burger = () => {
           <SheetTitle></SheetTitle>
           <SheetDescription className="flex flex-col gap-3">
             <Link href={"#home"} className="text-lg hover:text-blue-500">
+              Beranda
+            </Link>
+            <Link
+              href={"#verification"}
+              className="text-lg hover:text-blue-500"
+            >
               Verifikasi
             </Link>
             <Link
               href={"#how-it-works"}
               className="text-lg hover:text-blue-500"
             >
-              Cara Kerja
+              Dokumentasi
             </Link>
           </SheetDescription>
         </SheetHeader>
@@ -61,10 +67,13 @@ const Navbar = () => {
         </div>
         <div className=" gap-4 lg:flex hidden">
           <Link href={"#home"} className="hover:text-blue-500">
+            Beranda
+          </Link>
+          <Link href={"#verification"} className="hover:text-blue-500">
             Verifikasi
           </Link>
           <Link href={"#how-it-works"} className="hover:text-blue-500">
-            Cara Kerja
+            Dokumentasi
           </Link>
         </div>
         <div className="flex lg:hidden">
