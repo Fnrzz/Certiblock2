@@ -6,7 +6,7 @@ const Verification = () => {
   return (
     <section
       id="verification"
-      className="container mx-auto py-20 px-4 scroll-mt-28"
+      className="container mx-auto py-20 px-4 scroll-mt-10"
     >
       <div className="flex flex-col items-center gap-4 text-center mb-10">
         <h1 className="text-4xl font-bold">Cek Keaslian Ijazah</h1>

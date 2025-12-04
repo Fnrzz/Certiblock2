@@ -34,7 +34,10 @@ const Hero = () => {
             akademik Anda sekarang.
           </p>
 
-          <div className="mx-auto max-w-2xl">
+          <div className="mx-auto max-w-2xl flex flex-col md:flex-row items-center justify-center gap-4">
+            <Link href="#documentation">
+              <Button variant="outline">Lihat Dokumentasi</Button>
+            </Link>
             <Link href="#verification">
               <Button>Coba Verifikasi Sekarang</Button>
             </Link>

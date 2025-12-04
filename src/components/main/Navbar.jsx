@@ -35,7 +35,7 @@ const Burger = () => {
               Verifikasi
             </Link>
             <Link
-              href={"#how-it-works"}
+              href={"#documentation"}
               className="text-lg hover:text-blue-500"
             >
               Dokumentasi
@@ -72,7 +72,7 @@ const Navbar = () => {
           <Link href={"#verification"} className="hover:text-blue-500">
             Verifikasi
           </Link>
-          <Link href={"#how-it-works"} className="hover:text-blue-500">
+          <Link href={"#documentation"} className="hover:text-blue-500">
             Dokumentasi
           </Link>
         </div>
