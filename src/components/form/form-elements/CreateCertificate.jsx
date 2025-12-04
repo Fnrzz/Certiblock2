@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Label from "../Label";
 import Input from "../input/InputField";
 import DatePicker from "../input/DatePicker";
@@ -10,7 +10,6 @@ import TextArea from "../input/TextArea";
 import { DownloadIcon } from "@/icons";
 import Select from "../input/Select";
 import { ProgramStudy } from "@/services/certificate/programStudy";
-import { issueCertificate } from "@/services/meta-mask/issueCertificate";
 import { DownloadJson } from "@/services/certificate/downloadJson";
 import CopyButton from "@/components/ui/button/CopyButton";
 import { useIssueCertificate } from "@/hooks/useIssueCertificate";
@@ -19,6 +18,8 @@ export default function CreateCertificate() {
   const successModal = useModal();
   const errorModal = useModal();
   const confirmationModal = useModal();
+
+  const formRef = useRef(null);
 
   const { issue, isLoading, isError, isResult, isSuccess, reset } =
     useIssueCertificate();
@@ -35,7 +36,10 @@ export default function CreateCertificate() {
 
   useEffect(() => {
     if (isError) errorModal.openModal();
-    if (isSuccess) successModal.openModal();
+    if (isSuccess) {
+      successModal.openModal();
+      if (formRef.current()) formRef.current.reset();
+    }
   }, [isError, isSuccess]);
 
   const handleSubmit = async (e) => {
@@ -43,7 +47,6 @@ export default function CreateCertificate() {
     const formData = new FormData(e.target);
     const studentData = Object.fromEntries(formData);
     await issue(studentData);
-    if (isSuccess) e.target.reset();
   };
 
   const handleCloseErrorModal = () => {
@@ -64,7 +67,7 @@ export default function CreateCertificate() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form ref={formRef} onSubmit={handleSubmit}>
         <div className="space-y-4">
           <div className="grid md:grid-cols-3 gap-4">
             <div>
