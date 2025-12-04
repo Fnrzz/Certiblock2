@@ -6,7 +6,7 @@ export async function updateSession(request) {
 
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com;
+    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' https://hcaptcha.com https://*.hcaptcha.com;
     style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com;
     img-src 'self' blob: data:;
     font-src 'self';
