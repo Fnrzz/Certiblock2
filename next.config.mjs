@@ -23,6 +23,10 @@ const nextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://certiblock-ums.vercel.app",
+          },
         ],
       },
     ];
