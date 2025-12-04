@@ -2,36 +2,6 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
 export async function updateSession(request) {
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-
-  const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.hcaptcha.com https://*.hcaptcha.com https://vercel.live https://*.vercel-insights.com;
-    style-src 'self' 'unsafe-inline' https://*.hcaptcha.com;
-    img-src 'self' blob: data: ${supabaseUrl} https://*.hcaptcha.com https://hcaptcha.com;
-    font-src 'self' data:;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    frame-ancestors 'none';
-    frame-src 'self' https://*.hcaptcha.com https://hcaptcha.com https://vercel.live;
-    connect-src 'self' ${supabaseUrl} https://*.hcaptcha.com https://hcaptcha.com https://*.vercel-insights.com https://vercel.live;
-    upgrade-insecure-requests;
-  `;
-
-  const contentSecurityPolicyHeaderValue = cspHeader
-    .replace(/\s{2,}/g, " ")
-    .trim();
-
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-nonce", nonce);
-  requestHeaders.set(
-    "Content-Security-Policy",
-    contentSecurityPolicyHeaderValue
-  );
-
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -92,11 +62,6 @@ export async function updateSession(request) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
-
-  supabaseResponse.headers.set(
-    "Content-Security-Policy",
-    contentSecurityPolicyHeaderValue
-  );
 
   return supabaseResponse;
 }
