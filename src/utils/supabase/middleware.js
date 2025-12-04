@@ -3,10 +3,11 @@ import { NextResponse } from "next/server";
 
 export async function updateSession(request) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' https://hcaptcha.com https://*.hcaptcha.com;
+    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' https://hcaptcha.com https://*.hcaptcha.com https://vercel.live;
     style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com;
     img-src 'self' blob: data:;
     font-src 'self';
@@ -15,7 +16,7 @@ export async function updateSession(request) {
     form-action 'self';
     frame-ancestors 'none';
     frame-src 'self' https://hcaptcha.com https://*.hcaptcha.com;
-    connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com;
+    connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com https://vercel.live ${supabaseUrl};
     upgrade-insecure-requests;
 `;
 
@@ -97,6 +98,27 @@ export async function updateSession(request) {
   supabaseResponse.headers.set(
     "Content-Security-Policy",
     contentSecurityPolicyHeaderValue
+  );
+  supabaseResponse.headers.set("x-nonce", nonce);
+
+  supabaseResponse.headers.set(
+    "Access-Control-Allow-Origin",
+    "https://certiblock-ums.vercel.app"
+  );
+  supabaseResponse.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS"
+  );
+  supabaseResponse.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+
+  supabaseResponse.headers.delete("X-Powered-By");
+  supabaseResponse.headers.set("X-Content-Type-Options", "nosniff");
+  supabaseResponse.headers.set(
+    "Referrer-Policy",
+    "strict-origin-when-cross-origin"
   );
 
   return supabaseResponse;
