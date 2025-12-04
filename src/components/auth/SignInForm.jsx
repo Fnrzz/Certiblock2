@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
-export default function SignInForm() {
+export default function SignInForm({ nonce }) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -109,6 +109,7 @@ export default function SignInForm() {
                     onExpire={() => {
                       setCaptchaToken(null);
                     }}
+                    nonce={nonce}
                   />
                 </div>
                 <div>
