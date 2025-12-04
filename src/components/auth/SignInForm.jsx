@@ -15,8 +15,8 @@ export default function SignInForm() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [captchaToken, setCaptchaToken] = useState();
-  const captcha = useRef();
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const captcha = useRef(null);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -42,6 +42,7 @@ export default function SignInForm() {
     } catch (err) {
       setError(err.message);
       captcha.current.resetCaptcha();
+      setCaptchaToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -104,6 +105,9 @@ export default function SignInForm() {
                     sitekey="a8a8b9e2-7220-4336-888c-27dcfa140036"
                     onVerify={(token) => {
                       setCaptchaToken(token);
+                    }}
+                    onExpire={() => {
+                      setCaptchaToken(null);
                     }}
                   />
                 </div>
