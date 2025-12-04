@@ -4,16 +4,10 @@ import { NextResponse } from "next/server";
 export async function updateSession(request) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
-  const isDev = process.env.NODE_ENV === "development";
-
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' ${
-    isDev ? "'unsafe-eval'" : ""
-  } https://hcaptcha.com https://*.hcaptcha.com;
-    style-src 'self' ${
-      isDev ? "'unsafe-inline'" : `'nonce-${nonce}'`
-    } https://hcaptcha.com https://*.hcaptcha.com;
+    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com;
+    style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com;
     img-src 'self' blob: data:;
     font-src 'self';
     object-src 'none';
