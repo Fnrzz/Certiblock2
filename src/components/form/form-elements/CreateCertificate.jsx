@@ -38,7 +38,9 @@ export default function CreateCertificate() {
     if (isError) errorModal.openModal();
     if (isSuccess) {
       successModal.openModal();
-      if (formRef.current()) formRef.current.reset();
+      if (formRef.current) {
+        formRef.current.reset();
+      }
     }
   }, [isError, isSuccess]);
 
