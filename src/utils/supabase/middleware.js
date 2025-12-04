@@ -99,27 +99,6 @@ export async function updateSession(request) {
     "Content-Security-Policy",
     contentSecurityPolicyHeaderValue
   );
-  supabaseResponse.headers.set("x-nonce", nonce);
-
-  supabaseResponse.headers.set(
-    "Access-Control-Allow-Origin",
-    "https://certiblock-ums.vercel.app"
-  );
-  supabaseResponse.headers.set(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS"
-  );
-  supabaseResponse.headers.set(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-
-  supabaseResponse.headers.delete("X-Powered-By");
-  supabaseResponse.headers.set("X-Content-Type-Options", "nosniff");
-  supabaseResponse.headers.set(
-    "Referrer-Policy",
-    "strict-origin-when-cross-origin"
-  );
 
   return supabaseResponse;
 }
