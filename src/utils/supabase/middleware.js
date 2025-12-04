@@ -2,8 +2,46 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
 export async function updateSession(request) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+
+  const isDev = process.env.NODE_ENV === "development";
+  let unsafe_eval = false;
+  if (isDev) {
+    unsafe_eval = true;
+  }
+
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'nonce-${nonce}' ${
+    isDev ? "'unsafe-eval'" : ""
+  } https://hcaptcha.com https://*.hcaptcha.com;
+    style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com;
+    img-src 'self' blob: data:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    frame-src 'self' https://hcaptcha.com https://*.hcaptcha.com;
+    connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com;
+    upgrade-insecure-requests;
+`;
+  const contentSecurityPolicyHeaderValue = cspHeader
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+
+  requestHeaders.set(
+    "Content-Security-Policy",
+    contentSecurityPolicyHeaderValue
+  );
+
   let supabaseResponse = NextResponse.next({
-    request,
+    request: {
+      headers: requestHeaders,
+    },
   });
 
   const supabase = createServerClient(
@@ -62,6 +100,11 @@ export async function updateSession(request) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
+
+  supabaseResponse.headers.set(
+    "Content-Security-Policy",
+    contentSecurityPolicyHeaderValue
+  );
 
   return supabaseResponse;
 }

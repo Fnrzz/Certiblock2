@@ -1,6 +1,6 @@
 import SignInForm from "@/components/auth/SignInForm";
 
-const page = () => {
+const page = async () => {
   return <SignInForm />;
 };
 
