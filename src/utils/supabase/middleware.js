@@ -8,7 +8,7 @@ export async function updateSession(request) {
 
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.hcaptcha.com https://*.hcaptcha.com https://vercel.live;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.hcaptcha.com https://*.hcaptcha.com https://vercel.live https://*.vercel-insights.com;
     style-src 'self' 'unsafe-inline' https://*.hcaptcha.com;
     img-src 'self' blob: data: ${supabaseUrl} https://*.hcaptcha.com https://hcaptcha.com;
     font-src 'self' data:;
