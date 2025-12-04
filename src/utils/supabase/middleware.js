@@ -14,6 +14,7 @@ export async function updateSession(request) {
     style-src 'self' ${
       isDev ? "'unsafe-inline'" : `'nonce-${nonce}'`
     } https://hcaptcha.com https://*.hcaptcha.com;
+    style-src-attr 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
     object-src 'none';
