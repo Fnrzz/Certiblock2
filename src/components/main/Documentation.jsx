@@ -18,7 +18,7 @@ const TabsContent1 = () => {
       <p className="text-gray-500">
         Proses verifikasi ijazah dari penerbitan hingga validasi
       </p>
-      <div className="flex flex-col gap-10 mt-10">
+      <div className="flex flex-col gap-5 mt-10">
         <div className="flex flex-col md:flex-row gap-4 md:items-center">
           <div className="py-3 px-6 max-w-max flex items-center justify-center bg-blue-500 rounded-md">
             <span className="text-lg text-center text-white font-bold">1</span>
@@ -82,7 +82,7 @@ const TabsContent2 = () => {
       <p className="text-gray-500">
         Alur komunikasi antara frontend dan smart contract
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
         <div className="flex flex-col gap-3 items-center bg-gray-100 p-4 rounded-md">
           <div className="flex items-center justify-center p-3 max-w-max bg-blue-100 rounded-lg">
             <FileCode className="w-8 h-8 text-blue-500" />
@@ -111,7 +111,7 @@ const TabsContent2 = () => {
           </p>
         </div>
       </div>
-      <div className=" bg-gray-100 p-4 rounded-md mt-10">
+      <div className=" bg-gray-100 p-4 rounded-md mt-5">
         <h6 className="text-lg font-bold">Alur Komunikasi</h6>
         <div className="flex gap-3 mt-5">
           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm flex items-center justify-center">
