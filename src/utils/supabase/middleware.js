@@ -8,15 +8,15 @@ export async function updateSession(request) {
 
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'nonce-${nonce}' 'strict-dynamic' https://js.hcaptcha.com https://*.hcaptcha.com;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.hcaptcha.com https://*.hcaptcha.com https://vercel.live;
     style-src 'self' 'unsafe-inline' https://*.hcaptcha.com;
-    img-src 'self' blob: data: ${supabaseUrl};
-    font-src 'self';
+    img-src 'self' blob: data: ${supabaseUrl} https://*.hcaptcha.com https://hcaptcha.com;
+    font-src 'self' data:;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    frame-src 'self' https://*.hcaptcha.com https://hcaptcha.com;
+    frame-src 'self' https://*.hcaptcha.com https://hcaptcha.com https://vercel.live;
     connect-src 'self' ${supabaseUrl} https://*.hcaptcha.com https://hcaptcha.com https://*.vercel-insights.com https://vercel.live;
     upgrade-insecure-requests;
   `;
