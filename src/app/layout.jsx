@@ -1,5 +1,6 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
+import { headers } from "next/headers";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -66,9 +67,14 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const headersList = await headers();
+  const nonce = headersList.get("x-nonce") || "";
   return (
     <html lang="en" className="scroll-smooth" id="home">
+      <head>
+        <meta property="csp-nonce" content={nonce} />
+      </head>
       <body className={`${outfit.className} dark:bg-gray-900`}>{children}</body>
     </html>
   );
