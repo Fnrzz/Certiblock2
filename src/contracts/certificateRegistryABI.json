@@ -1,9 +1,8 @@
 [
-  {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
+  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  { "inputs": [], "name": "CertificateAlreadyIssued", "type": "error" },
+  { "inputs": [], "name": "CertificateNotFound", "type": "error" },
+  { "inputs": [], "name": "NotOwner", "type": "error" },
   {
     "anonymous": false,
     "inputs": [
@@ -56,19 +55,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "bytes32",
@@ -83,20 +69,10 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "_hashToVerify",
-        "type": "bytes32"
-      }
+      { "internalType": "bytes32", "name": "_hashToVerify", "type": "bytes32" }
     ],
     "name": "verifyCertificate",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   }

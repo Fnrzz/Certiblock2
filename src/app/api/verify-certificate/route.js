@@ -1,5 +1,5 @@
 import { makeHash } from "@/services/certificate/makeHash";
-import { VerifyCertificate } from "@/services/certificate/verifyCertificate";
+import { VerifyCertificate } from "@/services/meta-mask/verifyCertificate";
 import { NextResponse } from "next/server";
 
 export const POST = async (req) => {

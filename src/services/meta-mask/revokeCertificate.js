@@ -12,7 +12,11 @@ export const revokeCertificate = async (hash) => {
     const tx = await contract.revokeCertificate(hash);
     return tx.hash;
   } catch (error) {
-    if (error.code === "ACTION_REJECTED") {
+    if (error.message.includes("CertificateNotFound")) {
+      throw new Error("Certificate not found");
+    } else if (error.message.includes("NotOwner")) {
+      throw new Error("You are not the owner");
+    } else if (error.code === "ACTION_REJECTED") {
       throw new Error("Transaction was rejected by the user in MetaMask.");
     }
     throw new Error(
