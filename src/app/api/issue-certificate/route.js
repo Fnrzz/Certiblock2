@@ -31,7 +31,6 @@ export const POST = async (req) => {
 
     const { data: certificateJson } = MakeJson(studentData);
     const { hash } = await makeHash(certificateJson);
-    console.log(hash);
 
     const { certificateId, error: errorUpload } = await UploadJson(
       certificateJson
