@@ -1,20 +1,21 @@
 import { ethers } from "ethers";
 import contractABI from "@/contracts/certificateRegistryABI.json";
 export const issueCertificate = async (hash) => {
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+    contractABI,
+    signer
+  );
   try {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
-    const contract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-      contractABI,
-      signer
-    );
     const tx = await contract.issueCertificate(hash);
     return tx.hash;
   } catch (error) {
-    if (error.message.includes("CertificateAlreadyIssued")) {
+    const decodedError = contract.interface.parseError(error.data);
+    if (decodedError.name === "CertificateAlreadyIssued") {
       throw new Error("Certificate already issued");
-    } else if (error.message.includes("NotOwner")) {
+    } else if (decodedError.name === "NotOwner") {
       throw new Error("You are not the owner");
     } else if (error.code === "ACTION_REJECTED") {
       throw new Error("Transaction was rejected by the user in MetaMask.");

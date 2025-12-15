@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 
 export const POST = async (req) => {
   try {
-    const { transactionId, transactionHash } = await req.json();
-    if (!transactionId || !transactionHash) {
+    const { certificateId, certificateHash, transactionHash } =
+      await req.json();
+    if (!certificateId || !certificateHash || !transactionHash) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -13,13 +14,13 @@ export const POST = async (req) => {
 
     const supabase = await createClient();
 
-    const { error } = await supabase
-      .from("transactions")
-      .update({
-        transaction_hash: transactionHash,
-        status: "PENDING",
-      })
-      .eq("id", transactionId);
+    const { error } = await supabase.from("transactions").insert({
+      certificate_id: certificateId,
+      certificate_hash: certificateHash,
+      transaction_hash: transactionHash,
+      status: "PENDING",
+      type: "ISSUE",
+    });
 
     if (error) throw new Error(error.message);
 

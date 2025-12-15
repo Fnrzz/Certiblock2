@@ -21,7 +21,7 @@ export const useIssueCertificate = () => {
       });
       const draftData = await makeDraft.json();
       if (!makeDraft.ok) throw new Error(draftData.error);
-      const { hash, transactionId, studentDetails } = draftData.data;
+      const { hash, certificateId, studentDetails } = draftData.data;
 
       // Issue Certificate to Blockchain
       if (typeof window.ethereum === "undefined") {
@@ -34,7 +34,11 @@ export const useIssueCertificate = () => {
       // Confirm Transaction
       const confirmTransaction = await fetch("/api/confirm-transaction", {
         method: "POST",
-        body: JSON.stringify({ transactionId, transactionHash: txHash }),
+        body: JSON.stringify({
+          certificateId,
+          certificateHash: hash,
+          transactionHash: txHash,
+        }),
       });
       if (!confirmTransaction.ok) throw new Error(confirmTransaction.error);
 

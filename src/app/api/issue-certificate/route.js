@@ -1,7 +1,6 @@
 import { makeHash } from "@/services/certificate/makeHash";
 import { MakeJson } from "@/services/certificate/makeJson";
 import { UploadJson } from "@/services/certificate/uploadJson";
-import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
 export const POST = async (req) => {
@@ -32,6 +31,7 @@ export const POST = async (req) => {
 
     const { data: certificateJson } = MakeJson(studentData);
     const { hash } = await makeHash(certificateJson);
+    console.log(hash);
 
     const { certificateId, error: errorUpload } = await UploadJson(
       certificateJson
@@ -39,26 +39,13 @@ export const POST = async (req) => {
 
     if (errorUpload) throw new Error(errorUpload.message);
 
-    const supabase = await createClient();
-    const { data: transaction, error: transactionError } = await supabase
-      .from("transactions")
-      .insert({
-        certificate_id: certificateId,
-        certificate_hash: hash,
-        status: "DRAFT",
-        type: "ISSUE",
-      })
-      .select("id")
-      .single();
-    if (transactionError) throw new Error(transactionError.message);
-
     return NextResponse.json(
       {
-        message: "Draft certificate created successfully",
+        message: "Certificate data prepared successfully",
         data: {
           studentDetails: certificateJson,
           hash,
-          transactionId: transaction.id,
+          certificateId,
         },
       },
       { status: 200 }
