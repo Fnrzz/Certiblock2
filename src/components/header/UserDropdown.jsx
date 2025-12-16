@@ -9,6 +9,7 @@ export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("user@example.com");
   const supabase = createClient();
+
   useEffect(() => {
     const fetchUser = async () => {
       const { data, error } = await supabase.auth.getUser();

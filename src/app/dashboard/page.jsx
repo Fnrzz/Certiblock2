@@ -1,13 +1,14 @@
-// import { DashboardMetrics } from "@/components/dashboard/DashboardMetrics";
+import ComponentCard from "@/components/common/ComponentCard";
+import ListTransactions from "@/components/tables/ListTransactions";
 import React from "react";
 
 const page = () => {
   return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6">
-      <div className="col-span-12 space-y-6 xl:col-span-7">
-        {/* <DashboardMetrics /> */}
-        {/* <MonthlySalesChart /> */}
-      </div>
+    <div className="dark:text-white">
+      <h2 className="text-xl font-semibold mb-6">Dashboard</h2>
+      <ComponentCard title={"All Transactions"}>
+        <ListTransactions />
+      </ComponentCard>
     </div>
   );
 };

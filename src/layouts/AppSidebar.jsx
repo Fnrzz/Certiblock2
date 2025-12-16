@@ -9,7 +9,6 @@ import {
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  ListIcon,
   PencilIcon,
   TrashBinIcon,
 } from "@/icons";
@@ -19,11 +18,6 @@ const navItems = [
     icon: <GridIcon />,
     name: "Dashboard",
     path: "/dashboard",
-  },
-  {
-    icon: <ListIcon />,
-    name: "Transactions",
-    path: "/dashboard/transactions",
   },
   {
     icon: <PencilIcon />,
