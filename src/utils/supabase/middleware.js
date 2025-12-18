@@ -12,7 +12,10 @@ export async function updateSession(request) {
     script-src 'self' 'nonce-${nonce}' ${
     isDev ? "'unsafe-eval'" : ""
   } https://hcaptcha.com https://*.hcaptcha.com https://vercel.live;
-    style-src 'self' 'unsafe-inline' https://hcaptcha.com https://*.hcaptcha.com;
+    style-src 'self'  ${
+      isDev ? "'unsafe-inline'" : "'nonce-${nonce}'"
+    } https://hcaptcha.com https://*.hcaptcha.com;
+    style-src-attr 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
     object-src 'none';
