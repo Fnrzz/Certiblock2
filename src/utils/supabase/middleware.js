@@ -22,7 +22,7 @@ export async function updateSession(request) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    frame-src 'self' https://hcaptcha.com https://*.hcaptcha.com;
+    frame-src 'self' https://hcaptcha.com https://*.hcaptcha.com https://www.youtube.com https://www.youtube-nocookie.com;
     connect-src 'self' https://hcaptcha.com https://*.hcaptcha.com https://vercel.live ${supabaseUrl};
     upgrade-insecure-requests;
 `;

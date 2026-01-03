@@ -293,6 +293,19 @@ const TabsContent4 = () => {
             </div>
           </div>
         </div>
+        <div className="flex justify-center items-center gap-3">
+          <div className="relative w-full md:w-3/4  aspect-video">
+            <iframe
+              className="absolute top-0 left-0 w-full h-full"
+              src="https://www.youtube-nocookie.com/embed/REc2YgAVQMI?si=sEi2yRTPxYPWetRC&autoplay=1"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
       </div>
     </div>
   );
