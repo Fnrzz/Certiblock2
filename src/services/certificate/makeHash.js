@@ -1,12 +1,7 @@
 import stringify from "json-stable-stringify";
+import { sha256, toUtf8Bytes } from "ethers";
 export const makeHash = async (data) => {
   const jsonString = stringify(data);
-  const hash = await crypto.subtle.digest(
-    "sha-256",
-    new TextEncoder().encode(jsonString)
-  );
-  const hashArray = Array.from(new Uint8Array(hash));
-  const hashHex =
-    "0x" + hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  const hashHex = sha256(toUtf8Bytes(jsonString));
   return { hash: hashHex };
 };
